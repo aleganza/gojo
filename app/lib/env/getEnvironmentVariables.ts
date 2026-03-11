@@ -1,5 +1,5 @@
-// import env from "@/env.json";
+import env from "@/env.json";
 
-// export const getEnvironmentVariables = () => {
-//   return env;
-// };
+export const getEnvironmentVariables = () => {
+  return env;
+};

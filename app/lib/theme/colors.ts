@@ -1,13 +1,13 @@
 import { ThemeColors } from "./types";
 
 const COMMON_COLORS = {
-  // primary: "#4caf50",
+  // primary: "#e8eadd",
 } as const;
 
 export const COLORS: Record<"light" | "dark", ThemeColors> = {
   light: {
     ...COMMON_COLORS,
-    primary: "#4caf50",
+    primary: "#e8eadd",
     secondary: "#8c13e0",
     text: "#0d0d0d",
     textSupporting: "#000000bf",
@@ -28,7 +28,7 @@ export const COLORS: Record<"light" | "dark", ThemeColors> = {
   },
   dark: {
     ...COMMON_COLORS,
-    primary: "#4caf50",
+    primary: "#e8eadd",
     secondary: "#B96CFF",
     text: "#f2f2f2",
     textSupporting: "#ffffffbf",
@@ -43,8 +43,8 @@ export const COLORS: Record<"light" | "dark", ThemeColors> = {
     alert: "#d13c3c",
     idle: "#e5a04a",
     link: "#3380FF",
-    background: "#0e0e0f",
-    foreground: "#1e1e20",
-    mist: "#2e2e30",
+  background: "#1a1917",
+  foreground: "#252320",
+  mist:       "#302e2b",
   },
 };

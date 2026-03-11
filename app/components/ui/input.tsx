@@ -97,6 +97,8 @@ export const Input: React.FC<InputProps> = ({
           },
           inputStyle,
         ]}
+        cursorColor={theme.colors.primary}
+        color
         placeholderTextColor={theme.colors.textMuted}
         value={text}
         onChangeText={handleChangeText}

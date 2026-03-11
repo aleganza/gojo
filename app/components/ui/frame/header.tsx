@@ -1,8 +1,12 @@
 import { FRAME_MARGIN } from "@/lib/config";
+import { AniPressable } from "@/lib/reanimated/components";
 import { useTheme } from "@/lib/theme/useTheme";
 import React from "react";
-import { View } from "react-native";
-import { Pressable } from "react-native-gesture-handler";
+import { ActivityIndicator, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Txt } from "../texts";
@@ -21,11 +25,41 @@ export const Header: React.FC<HeaderProps> = ({
   const insets = useSafeAreaInsets();
 
   const renderHeaderIcons = (icons?: HeaderIcon[], prefix?: string) =>
-    icons?.map((i, index) => (
-      <Pressable key={`${prefix}-icon-${index}`} {...i}>
-        <i.icon size={theme.iconSize.md} color={theme.colors.text} />
-      </Pressable>
-    ));
+    icons?.map((i, index) => {
+      const scale = useSharedValue(1);
+      const opacity = useSharedValue(1);
+
+      const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+        opacity: opacity.value,
+      }));
+
+      if (i.isLoading)
+        return <ActivityIndicator key={`${prefix}-icon-${index}`} />;
+
+      return (
+        <AniPressable
+          key={`${prefix}-icon-${index}`}
+          onPress={i.onPress}
+          // onPressIn={() => {
+          //   scale.value = withTiming(0.9, { duration: 100 });
+          //   opacity.value = 0.6;
+          // }}
+          // onPressOut={() => {
+          //   scale.value = withTiming(1, { duration: 100 });
+          //   opacity.value = 1;
+          // }}
+          style={animatedStyle}
+        >
+          <i.icon
+            size={theme.iconSize.md}
+            color={i.accent ?? theme.colors.text}
+            fill={i.fillIcon ? (i.accent ?? theme.colors.text) : undefined}
+            {...i.iconProps}
+          />
+        </AniPressable>
+      );
+    });
 
   return (
     <View
@@ -36,8 +70,8 @@ export const Header: React.FC<HeaderProps> = ({
           left: 0,
           width: "100%",
           zIndex: 10,
-          borderBottomWidth: 1,
-          borderBottomColor: theme.colors.mist,
+          // borderBottomWidth: 1,
+          // borderBottomColor: theme.colors.mist,
           backgroundColor: theme.colors.background,
         },
       ]}
@@ -75,7 +109,7 @@ export const Header: React.FC<HeaderProps> = ({
                   {
                     top: 0,
                     fontFamily: theme.family.accent.bold,
-                    fontSize: theme.fontSize.lg,
+                    fontSize: theme.fontSize.md,
                     maxWidth: "75%",
                   },
                 ]}

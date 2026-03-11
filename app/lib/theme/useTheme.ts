@@ -68,7 +68,7 @@ export const useTheme = () => {
     };
   };
   // const systemTheme = useColorScheme() ?? "light";
-  const systemTheme = "light";
+  const systemTheme = "dark";
 
   const activeTheme = theme === "system" ? systemTheme : theme;
   const themeColors = COLORS[activeTheme];

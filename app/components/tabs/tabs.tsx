@@ -145,46 +145,6 @@ export function TabBar() {
           ),
         })}
       />
-
-      <Tabs.Screen
-        name="history"
-        options={(screenProps) => ({
-          title: "Cronologia",
-          tabBarButton: (buttonProps) => (
-            <TabBarButton Icon={Receipt} {...buttonProps} />
-          ),
-        })}
-      />
-
-      <Tabs.Screen
-        name="scanner"
-        options={(screenProps) => ({
-          title: "Scanner",
-          tabBarButton: (buttonProps) => (
-            <TabBarButton Icon={ScanBarcode} {...buttonProps} />
-          ),
-        })}
-      />
-
-      <Tabs.Screen
-        name="shopping"
-        options={(screenProps) => ({
-          title: "Spesa",
-          tabBarButton: (buttonProps) => (
-            <TabBarButton Icon={ShoppingBasket} {...buttonProps} />
-          ),
-        })}
-      />
-
-      <Tabs.Screen
-        name="pantry"
-        options={(screenProps) => ({
-          title: "Dispensa",
-          tabBarButton: (buttonProps) => (
-            <TabBarButton Icon={Nut} {...buttonProps} />
-          ),
-        })}
-      />
     </Tabs>
   );
 }

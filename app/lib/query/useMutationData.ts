@@ -29,8 +29,6 @@ export function useMutationData<TData, TVariables = void, TError = unknown>({
       toaster.error("Error");
     },
     onSuccess: (data, variables, onMutateResult, context) => {
-      toaster.success("Success");
-
       if (onSuccess) {
         onSuccess(data, variables, onMutateResult, context);
       }

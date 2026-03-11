@@ -3,5 +3,9 @@
     "dev": "concurrently \"pnpm --filter app start:web\" \"pnpm --filter electron dev\"",
     "build:web": "pnpm --filter app build:web",
     "build:desktop": "pnpm --filter electron build"
-  }
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "workspaces": ["app", "electron"]
 }

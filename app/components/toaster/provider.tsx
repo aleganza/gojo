@@ -138,7 +138,7 @@ const ToastItem = ({
       break;
 
     case "info":
-      bgColor = theme.colors.primary;
+      bgColor = theme.colors.mist;
       break;
 
     case "warning":

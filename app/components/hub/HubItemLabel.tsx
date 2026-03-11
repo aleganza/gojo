@@ -1,7 +1,7 @@
 import { useTheme } from "@/lib/theme/useTheme";
-import { Image } from "expo-image";
+// import { Image } from "expo-image";
 import { LucideIcon } from "lucide-react-native";
-import { ColorValue, View } from "react-native";
+import { ColorValue, View, Image } from "react-native";
 import { Txt } from "../ui/texts";
 
 const HubItemLabel: React.FC<{
@@ -47,7 +47,7 @@ const HubItemLabel: React.FC<{
           alignSelf: "center",
           color: labelColor ?? theme.colors.textSupporting,
           fontSize: theme.fontSize.base,
-          fontFamily: theme.family.accent.medium,
+          fontFamily: theme.family.accent.semi_bold,
         }}
         numberOfLines={0}
       >

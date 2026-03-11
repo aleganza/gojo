@@ -1,5 +1,8 @@
 import { Stack } from "expo-router";
 
+/**
+ * happens when the user is authenticated
+ */
 export default function AppLayout() {
   return (
     <Stack
