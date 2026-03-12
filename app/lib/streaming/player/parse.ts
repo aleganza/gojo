@@ -1,4 +1,5 @@
-import { MediaEpisodeCover } from "@/models/mediaData";
+import { MediaEpisodeCover } from "@/lib/media/media.types";
+
 
 export const parseTitle = (
   info: MediaEpisodeCover | undefined,

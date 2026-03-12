@@ -5,6 +5,8 @@ import Spacer from "@/components/ui/spacer";
 import { Txt } from "@/components/ui/texts";
 import { FRAME_MARGIN } from "@/lib/config";
 import { Logger } from "@/lib/logger/logger";
+import { useFetchEpisodesFromPlugin } from "@/lib/plugin/plugin-client-query";
+import { Plugin } from "@/lib/plugin/plugin.types";
 import { usePluginClient } from "@/lib/plugin/usePluginClient";
 import { usePlayerStore } from "@/lib/streaming/player/playerStore";
 import { useAuth } from "@/lib/supabase/auth/useAuth";
@@ -17,12 +19,13 @@ import {
 import { useTheme } from "@/lib/theme/useTheme";
 import { Bookmark, Check } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Image, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ActivityIndicator, Image, Pressable, View } from "react-native";
 
 import { H5 } from "../ui/headings";
+import MediaEpisodesList from "./MediaEpisodesList";
+import { useTMDBEpisodes } from "./TMDB/useTMDBEpisodes";
+import { SecondaryButton } from "../ui/buttons";
 
-import type { Plugin as PluginTypes } from "@/lib/plugin/plugin.types";
 interface MediaScreenProps {
   media: Db.Media;
 }
@@ -34,31 +37,43 @@ const MediaScreen: React.FC<MediaScreenProps> = ({ media }) => {
   const pluginClient = usePluginClient(DbPlugin!); // protected by usePlugin loading
 
   const { user } = useAuth();
-
   const { theme } = useTheme();
+  const { openPlayer, setPlayer } = usePlayerStore();
 
   const { data: watchStatus } = useWatchStatus(media.id, user?.id);
   const updateWatchStatus = useUpdateWatchStatus(media.id, user!.id);
+  const { data: episodes, isLoading: isLoadingEpisodes } =
+    useFetchEpisodesFromPlugin(media.plugin_id, media.external_id);
 
-  const { openPlayer, setPlayer } = usePlayerStore();
-  const [episodes, setEpisodes] = useState<PluginTypes.Episode[]>([]);
+  const { data: episodesCovers } = useTMDBEpisodes(media.title, media.type);
 
-  useEffect(() => {
-    const fetchEpisodes = async () => {
-      const e = await pluginClient?.getEpisodes(media.external_id);
+  const seasons = episodes ? getSeasons(episodes) : [];
+  const [selectedSeason, setSelectedSeason] = useState(0);
 
-      setEpisodes(e);
-    };
+  function getSeasons(episodes: Plugin.Episode[]): Plugin.Episode[][] {
+    const seasons: Plugin.Episode[][] = [];
+    let current: Plugin.Episode[] = [];
 
-    if (!media || isLoadingPlugin) return;
+    for (let i = 0; i < episodes.length; i++) {
+      if (i > 0 && episodes[i].number <= episodes[i - 1].number) {
+        seasons.push(current);
+        current = [];
+      }
+      current.push(episodes[i]);
+    }
 
-    fetchEpisodes();
-  }, [media, isLoadingPlugin]);
+    if (current.length > 0) seasons.push(current);
 
-  const handleOpenPlayer = async (episodeId: string, episodeNumber: number) => {
+    return seasons;
+  }
+
+  const handleOpenPlayer = async (episodeNumber: number) => {
+    const episodeId = episodes![episodeNumber - 1].id;
+
     try {
       console.log(episodeId);
       const sources = await pluginClient?.getEpisodeSource(episodeId);
+      console.log(sources);
       const streamingSource = sources[0];
 
       setPlayer({
@@ -94,7 +109,7 @@ const MediaScreen: React.FC<MediaScreenProps> = ({ media }) => {
       toaster.error("Errore: no media id");
     }
   };
-  
+
   return (
     <Frame
       scrollable
@@ -116,82 +131,76 @@ const MediaScreen: React.FC<MediaScreenProps> = ({ media }) => {
         marginHorizontal: FRAME_MARGIN,
       }}
     >
-      {media ? (
-        <>
-          <View
+      <View
+        style={{
+          flexDirection: "column",
+          alignItems: "center",
+          // padding: theme.spacing.md,
+          backgroundColor: theme.colors.background,
+          borderRadius: theme.borderRadius.lg,
+        }}
+      >
+        <Image
+          source={{ uri: media.poster_url ?? undefined }}
+          style={{
+            width: 100,
+            height: 140,
+            borderRadius: theme.borderRadius.md,
+          }}
+          resizeMode="cover"
+        />
+
+        <Spacer />
+
+        {DbPlugin ? (
+          <TinyLabel
+            text={`${(DbPlugin.manifest as Plugin.Manifest)!.name} - ${media.type.toUpperCase()}`}
+          />
+        ) : (
+          <ActivityIndicator />
+        )}
+      </View>
+
+      <Spacer size="xl" />
+
+      <H5 text="Episodi" />
+
+      <Spacer />
+
+      <View style={{ flexDirection: "row", gap: 8 }}>
+        {seasons.map((_, i) => (
+          <SecondaryButton
+            key={i}
+            size="sm"
+            onPress={() => setSelectedSeason(i)}
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              // padding: theme.spacing.md,
-              backgroundColor: theme.colors.background,
-              borderRadius: theme.borderRadius.lg,
+              opacity:
+                selectedSeason === i
+                  ? 0.4
+                  : 1,
             }}
           >
-            <Image
-              source={{ uri: media.poster_url ?? undefined }}
-              style={{
-                width: 100,
-                height: 140,
-                borderRadius: theme.borderRadius.md,
-              }}
-              resizeMode="cover"
-            />
+            <Txt>{`S${i + 1}`}</Txt>
+          </SecondaryButton>
+        ))}
+      </View>
 
-            <Spacer size="md" direction="horizontal" />
+      <Spacer size="md" />
 
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-              }}
-            >
-              <Txt
-                style={{
-                  fontSize: theme.fontSize.lg,
-                  fontFamily: theme.family.accent.bold,
-                  color: theme.colors.text,
-                }}
-              >
-                {media.title}
-              </Txt>
+      {isLoadingEpisodes && <ActivityIndicator />}
 
-              <Spacer size="sm" />
+      {!episodes && !isLoadingEpisodes && <Txt>errore episodi</Txt>}
 
-              <View style={{ alignSelf: "flex-start" }}>
-                <TinyLabel text={media.type.toUpperCase()} />
-              </View>
-
-              <Spacer size="sm" />
-
-              <Txt
-                style={{
-                  fontSize: theme.fontSize.sm,
-                  fontFamily: theme.family.accent.regular,
-                  color: theme.colors.textShy,
-                }}
-              >
-                External ID: {media.external_id}
-              </Txt>
-            </View>
-          </View>
-
-          <H5 text="Episodi" />
-
-          <View>
-            {episodes.map((e, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  handleOpenPlayer(e.id, e.number);
-                }}
-              >
-                <Txt>{e.number}</Txt>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </>
-      ) : (
-        <Txt>Loading media...</Txt>
+      {episodes && (
+        <MediaEpisodesList
+          media={media}
+          episodes={seasons[selectedSeason]}
+          episodesCovers={episodesCovers?.slice(
+            seasons.slice(0, selectedSeason).reduce((acc, s) => acc + s.length, 0),
+            seasons.slice(0, selectedSeason + 1).reduce((acc, s) => acc + s.length, 0),
+          )}
+          onPress={handleOpenPlayer}
+        />
       )}
     </Frame>
   );

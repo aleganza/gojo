@@ -7,16 +7,21 @@ import Spacer from "@/components/ui/spacer";
 import { FRAME_MARGIN } from "@/lib/config";
 import { useSearchInPlugin } from "@/lib/plugin/plugin-client-query";
 import { usePluginClient } from "@/lib/plugin/usePluginClient";
-import { usePlugin } from "@/lib/supabase/queries/plugins";
-import { useLocalSearchParams } from "expo-router";
+import { usePlugin, useRemovePlugin } from "@/lib/supabase/queries/plugins";
+import { useTheme } from "@/lib/theme/useTheme";
+import { router, useLocalSearchParams } from "expo-router";
+import { Trash } from "lucide-react-native";
 import { useState } from "react";
 
 import type { Plugin } from "@/lib/plugin/plugin.types";
 export default function IndexTabScreen() {
   const { id: pluginId }: { id: string } = useLocalSearchParams();
 
+  const { theme } = useTheme();
+
   const { data: DbPlugin, isLoading: isLoadingPlugin } = usePlugin(pluginId);
   const pluginClient = usePluginClient(DbPlugin!); // protected by usePlugin loading
+  const { mutate: removePlugin } = useRemovePlugin();
 
   const [searchText, setSearchText] = useState<string>("");
   const {
@@ -43,6 +48,17 @@ export default function IndexTabScreen() {
           ? "Carico..."
           : (DbPlugin?.manifest as Plugin.Manifest).name
       }
+      rightIcons={[
+        {
+          icon: Trash,
+          accent: theme.colors.alert,
+          onPress: () => {
+            removePlugin({ id: DbPlugin?.id ?? "" });
+            router.back();
+          },
+          isLoading: DbPlugin === undefined,
+        },
+      ]}
       isSubScreen
       contentContainerStyle={{
         marginHorizontal: FRAME_MARGIN,

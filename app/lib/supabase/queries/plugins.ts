@@ -58,3 +58,31 @@ export function useAddPlugin() {
     },
   });
 }
+
+type RemovePluginInput = {
+  id: string;
+};
+
+export function useRemovePlugin() {
+  return useMutationData<Db.Plugin, RemovePluginInput, Error>({
+    mutationFn: async ({ id }) => {
+      const { data, error } = await supabase
+        .from("plugins")
+        .delete()
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (deletedPlugin) => {
+      // Aggiorna la cache di "plugins" rimuovendo il plugin eliminato
+      queryClient.setQueryData<Db.Plugin[] | undefined>(["plugins"], (old) =>
+        old?.filter((p) => p.id !== deletedPlugin.id)
+      );
+      // Invalida eventualmente la cache del singolo plugin
+      queryClient.invalidateQueries({ queryKey: ["plugin", deletedPlugin.id] });
+    },
+  });
+}

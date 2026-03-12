@@ -4,33 +4,37 @@ export type Plugin = Db.Plugin;
 
 export const usePluginClient = (plugin: Plugin | undefined) => {
   const getWrapper = () => {
-    if (plugin === undefined) throw "no"
+    try {
+      if (plugin === undefined) throw "no";
 
-    const apiFactory = new Function(plugin.script);
-    const api = apiFactory();
+      const apiFactory = new Function(plugin.script);
+      const api = apiFactory();
 
-    return api;
+      return api;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const search = async (query: string) => {
+  const search = async (query: string, ...args: any[]) => {
     const w = getWrapper();
 
-    return await w.search(query);
+    return await w.search(query, ...args);
   };
 
-  const getEpisodes = async (id: string) => {
+  const getEpisodes = async (id: string, ...args: any[]) => {
     const w = getWrapper();
 
-    return await w.fetchEpisodes(id);
+    return await w.fetchEpisodes(id, ...args);
   };
 
-  const getEpisodeSource = async (episodeId: string) => {
+  const getEpisodeSource = async (episodeId: string, ...args: any[]) => {
     const w = getWrapper();
 
-    return await w.fetchSources(episodeId);
+    return await w.fetchSources(episodeId, ...args);
   };
 
-  if (plugin === undefined) return null
+  if (plugin === undefined) return null;
 
   return {
     id: plugin.id,

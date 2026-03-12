@@ -43,8 +43,8 @@ export const COLORS: Record<"light" | "dark", ThemeColors> = {
     alert: "#d13c3c",
     idle: "#e5a04a",
     link: "#3380FF",
-  background: "#1a1917",
-  foreground: "#252320",
-  mist:       "#302e2b",
+    background: "#1a1917",
+    foreground: "#252320",
+    mist:       "#302e2b",
   },
 };

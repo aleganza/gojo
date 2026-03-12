@@ -74,9 +74,9 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
         ]}
         pointerEvents="box-none"
       >
-        {toasts.map((toast) => (
+        {toasts.map((toast, index) => (
           <ToastItem
-            key={toast.id}
+            key={`${toast.id}-${index}`}
             toast={toast}
             onClose={() => remove(toast.id)}
           />

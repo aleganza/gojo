@@ -25,6 +25,7 @@ import { View } from "react-native";
 export default function IndexTabScreen() {
   const { data: plugins } = usePlugins();
   const { mutate: addPlugin } = useAddPlugin();
+
   const { logout } = useAuth();
   const { theme } = useTheme();
   const { user } = useAuth();
@@ -95,7 +96,6 @@ export default function IndexTabScreen() {
           <HubItemsGroup label="Plugins">
             {plugins?.map((p, index) => (
               <HubItem
-                key={index}
                 label={(p.manifest as Plugin.Manifest).name}
                 route={{
                   pathname: "/(app)/plugin/[id]/",
@@ -110,9 +110,20 @@ export default function IndexTabScreen() {
 
         <Spacer />
 
-        <View style={{ borderRadius: theme.borderRadius.md, overflow: "hidden" }}>
-          <Input onChangeText={setPluginText} placeholder="Inserisci l'url del plugin"  wrapperStyle={{borderRadius: 0}} />
-          <SecondaryButton onPress={handleAddPlugin} fullWidth style={{borderRadius: 0}} >
+        <View
+          style={{ borderRadius: theme.borderRadius.md, overflow: "hidden" }}
+        >
+          <Input
+            onChangeText={setPluginText}
+            placeholder="Inserisci l'url del plugin"
+            clearable
+            wrapperStyle={{ borderRadius: 0 }}
+          />
+          <SecondaryButton
+            onPress={handleAddPlugin}
+            fullWidth
+            style={{ borderRadius: 0 }}
+          >
             Aggiungi plugin
           </SecondaryButton>
         </View>
