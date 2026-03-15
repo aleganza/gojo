@@ -1,0 +1,10 @@
+{
+  "name": "gojo",
+  "scripts": {
+    "dev": "concurrently \"cd gojo-desktop && pnpm dev\" \"cd mobile && pnpm dev\"",
+    "electron:prepare": "rm -rf gojo-desktop/src/renderer && cd gojo-mobile && pnpm build:web && cp -r dist/ ../gojo-desktop/src/renderer"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
