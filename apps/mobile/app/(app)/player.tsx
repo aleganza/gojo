@@ -3,6 +3,7 @@
 import { IconCircleButton, PlayerButton } from "@/components/ui/old-buttons";
 import { MonoText, Txt } from "@/components/ui/texts";
 import { FRAME_MARGIN } from "@/lib/config";
+import { platform } from "@/lib/env/env";
 import { AniLinearGradient, AniView } from "@/lib/reanimated/components";
 import { useStorage } from "@/lib/store/useStorage";
 import { parseInsidePlayerTitle } from "@/lib/streaming/player/parse";
@@ -192,7 +193,11 @@ const PlayerScreen: React.FC = () => {
 
   // go landscape
   useEffect(() => {
-    ScreenOrientation.lockAsync(storage.defaultOrientation);
+    const goLandscape = () => {
+      ScreenOrientation.lockAsync(storage.defaultOrientation);
+    };
+
+    if (platform.is.mobile) goLandscape()
   }, []);
 
   const trackballStyles = useAnimatedStyle(() => ({
@@ -279,7 +284,10 @@ const PlayerScreen: React.FC = () => {
 
       const bestQuality = getBestQuality(streamingSource.qualities);
       // TODO:
-      const pt = parseInsidePlayerTitle(ctx.seasonCovers?.[ctx.currentEpisode - 1], ctx.currentEpisode);
+      const pt = parseInsidePlayerTitle(
+        ctx.seasonCovers?.[ctx.currentEpisode - 1],
+        ctx.currentEpisode,
+      );
       const gt = ctx.media.title;
 
       setSources(streamingSource);
@@ -830,7 +838,7 @@ const PlayerScreen: React.FC = () => {
             // allowsFullscreen
             fullscreenOptions={{ enable: true }}
             allowsPictureInPicture={true}
-            startsPictureInPictureAutomatically
+            startsPictureInPictureAutomatically={platform.is.mobile}
             onPictureInPictureStart={() => setIsInPiP(true)}
             onPictureInPictureStop={() => setIsInPiP(false)}
             contentFit={resizeMode}
@@ -1283,7 +1291,7 @@ const PlayerScreen: React.FC = () => {
           )}
           {
             // storage.magicSlidersEnabled &&
-            !lockEnabled && (
+            platform.is.mobile && !lockEnabled && (
               <MagicSliders
                 volume={volume}
                 setVolume={(value: number) => (player.volume = value)}
@@ -1619,7 +1627,7 @@ const MagicSliders: React.FC<{
     };
 
     initVolume();
-    initBrightness();
+    if (platform.is.mobile) initBrightness();
   }, []);
 
   const hideSliders = () => {

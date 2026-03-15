@@ -11,7 +11,7 @@ export default function AppLayout() {
         headerBackVisible: false,
       }}
     >
-      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="index" />
     </Stack>
   );
 }

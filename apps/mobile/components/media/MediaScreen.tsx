@@ -29,6 +29,7 @@ import { H5 } from "../ui/headings";
 import { ProgressBar } from "../ui/progress-bar";
 import MediaEpisodesList from "./MediaEpisodesList";
 import { useTMDBEpisodes } from "./TMDB/useTMDBEpisodes";
+import { platform } from "@/lib/env/env";
 
 interface MediaScreenProps {
   media: Db.Media;
@@ -159,6 +160,7 @@ const MediaScreen: React.FC<MediaScreenProps> = ({ media }) => {
       ]}
       contentContainerStyle={{
         marginHorizontal: FRAME_MARGIN,
+        flex: platform.is.web ? 1 : undefined,
       }}
     >
       <View
@@ -289,6 +291,7 @@ const MediaScreen: React.FC<MediaScreenProps> = ({ media }) => {
         <ScrollView
           horizontal
           contentContainerStyle={{ flexDirection: "row", gap: 8 }}
+          style={{ maxHeight: platform.is.web ? 38 : undefined }}
         >
           {seasons.map((_, i) => (
             <SecondaryButton

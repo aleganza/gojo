@@ -1,10 +1,13 @@
-const getEnvironment = (): string => {
-  return process.env.NODE_ENV ?? "development";
-};
+import { Platform } from "react-native";
 
-const keepDevelopmentFeatureInProduction = true
+// -----------------------------
+// ENVIRONMENT
+// -----------------------------
+const getEnvironment = (): string => process.env.NODE_ENV ?? "development";
 
-const is = {
+const keepDevelopmentFeatureInProduction = true;
+
+const envIs = {
   development: getEnvironment() === "development" || keepDevelopmentFeatureInProduction,
   production: getEnvironment() === "production",
   test: getEnvironment() === "test",
@@ -12,7 +15,22 @@ const is = {
 
 export const env = {
   getEnvironment,
-  is,
+  is: envIs,
 };
 
-export default env;
+// -----------------------------
+// PLATFORM
+// -----------------------------
+const getPlatform = (): string => Platform.OS; // 'ios', 'android', 'web'
+
+const platformIs = {
+  ios: getPlatform() === "ios",
+  android: getPlatform() === "android",
+  web: getPlatform() === "web",
+  mobile: getPlatform() === "ios" || getPlatform() === "android",
+};
+
+export const platform = {
+  getPlatform,
+  is: platformIs,
+};
