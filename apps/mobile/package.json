@@ -7,8 +7,8 @@
     "tunnel": "expo start --tunnel",
     "build:dev": "eas build --profile development",
     "build:ios": "eas build --profile production --platform ios",
-    "start:web": "expo start --web",
     "build:web": "expo export --platform web",
+    "web": "expo start --web --tunnel",
     "refresh": "rm -rf node_modules pnpm-lock.yaml package-lock.json",
     "clean-start": "pnpm run refresh && expo start -c"
   },
@@ -43,7 +43,8 @@
     "expo-video": "~3.0.16",
     "expo-web-browser": "~15.0.10",
     "lucide-react-native": "^0.563.0",
-    "react": "19.1.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-native": "0.81.5",
     "react-native-compressor": "^1.16.0",
     "react-native-gesture-handler": "~2.28.0",
@@ -53,6 +54,7 @@
     "react-native-safe-area-context": "~5.6.2",
     "react-native-screens": "~4.16.0",
     "react-native-svg": "15.12.1",
+    "react-native-web": "^0.21.2",
     "react-native-worklets": "0.5.1",
     "subtitles-parser-vtt": "^0.1.0",
     "zustand": "^5.0.10"

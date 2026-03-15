@@ -28,7 +28,7 @@ export const COLORS: Record<"light" | "dark", ThemeColors> = {
   },
   dark: {
     ...COMMON_COLORS,
-    primary: "#A5C5E9",
+    primary: "#e8eadd",
     secondary: "#B96CFF",
     text: "#f2f2f2",
     textSupporting: "#ffffffbf",
