@@ -1,4 +1,6 @@
 {
+  "private": true,
+  "name": "gojo-monorepo",
   "scripts": {
     "dev": "concurrently \"pnpm --filter app start:web\" \"pnpm --filter electron dev\"",
     "build:web": "pnpm --filter app build:web",
@@ -6,6 +8,5 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.0"
-  },
-  "workspaces": ["app", "electron"]
+  }
 }
